@@ -38,7 +38,8 @@ This is **structural randomization at the protocol layer** — the verification 
 
 ## Architecture
 
-<img width="905" height="439" alt="セキュリティアーキテクチャ" src="https://github.com/user-attachments/assets/92d622eb-daac-4cc7-ac55-c3e99eb5cb11" />
+<img width="1080" height="603" alt="セキュリティアーキテクチャfix" src="https://github.com/user-attachments/assets/7aaad9f1-8a77-47b0-82b3-b4cda8af3638" />
+
 
 
 ### Layer 1 — OBO: Observation Before Opinion
