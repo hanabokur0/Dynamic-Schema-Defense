@@ -178,6 +178,44 @@ Different domain. Same structure.
 | Full integration | in progress |
 
 ---
+# DSD / DPP v0.1 — Python research prototype
+
+**Goal:** constrain damage after an AI agent's credential is compromised. This folder is intended to be copied into `hanabokur0/Dynamic-Schema-Defense` on a review branch. The existing root README should be retained/merged, rather than replaced with this standalone package README.
+
+## Run
+
+Requires Python 3.10+ and no third-party packages.
+
+```bash
+python -m unittest discover -s tests -v
+```
+
+## Contents
+
+- `dpp/core.py`: deterministic policy checks, opaque in-memory leases, state transitions, in-process protected store, hash-chain evidence, baseline recovery.
+- `tests/test_dpp.py`: simulation of stolen AI-agent credentials and authorized/unauthorized operations.
+- `docs/DPP-SPEC.md` and `docs/THREAT-MODEL.md`: design documents prepared in prior step.
+
+## Security boundary (critical)
+
+This is **not deployable security software**. The Python store intentionally exposes backing storage to anyone who can execute code inside its process. It does not defend against a compromised runtime, application server, system administrator, unmediated DB connection, or an attacker with access to the private Python object. Enforcement is valid **only in the deliberately modeled API call paths**.
+
+Other limitations: in-memory lease revocation (no persistence or distributed consensus); no independently signed identity or device attestation; no actual network gateway or egress filter; `outbound_bytes` is simulated, not a network byte count; no independent audit sink or trusted audit checkpoint; trusted baseline is an in-memory copy rather than immutable external backup; recovery booleans are mock assertions, **not** real human or integrity-verification mechanisms; no MVPL/CHD integrations yet. Tests do not measure real-time containment or production false-positive rates.
+
+`RESTRICTED` in v0.1 denies all operations. This is intentionally stricter than the eventual read-only fallback described by the specification; implementing a safe read-only fallback requires an explicit resource-level exception policy.
+
+## Test semantics
+
+All tested protected accesses through `ProtectedStore.operate()` are serialized with state updates and lease revocation, so a request starting after revocation commits is denied in this model. This does not prove distributed concurrency safety. A token stolen *along with* its subject/session context may still execute its explicitly authorized actions before expiration or revocation. This model cannot prevent every harmful action.
+
+## Next steps
+
+1. Place PEP in independent gateway/service; enforce all database and outbound paths.
+2. Use separately authenticated, signed policy and independent approvals.
+3. Add durable cryptographic capabilities, revocation and external append-only evidence storage.
+4. Connect MVPL as advisory classification; never allow AI signals to grant privileges.
+5. Build baseline comparison, network fault-injection and end-to-end attacks in isolated testbeds.
+
 
 ## License
 
